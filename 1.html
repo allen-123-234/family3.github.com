@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任務完成紀錄</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+  }
+
+  #recordsContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .record {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+  }
+
+  .record input[type="checkbox"] {
+    margin-right: 10px;
+  }
+
+  .deleteBtn {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .deleteBtn:hover {
+    background-color: #d32f2f;
+  }
+
+  #backToTaskSystemBtn {
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  #backToTaskSystemBtn:hover {
+    background-color: #0b7dda;
+  }
+</style>
+</head>
+<body>
+
+<button id="backToTaskSystemBtn" onclick="backToTaskSystem()">回到任務系統</button>
+
+<div id="recordsContainer">
+  <!-- 紀錄列表 -->
+</div>
+
+<script>
+function backToTaskSystem() {
+  window.location.href = "index.html";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const recordsContainer = document.getElementById('recordsContainer');
+
+  // 加載紀錄列表
+  loadRecords();
+
+  // 加載紀錄列表的函數
+  function loadRecords() {
+    const records = JSON.parse(localStorage.getItem('html1Records')) || [];
+    records.forEach(record => addRecord(record));
+  }
+
+  // 添加紀錄的函數
+  function addRecord(recordText) {
+    const recordDiv = document.createElement('div');
+    recordDiv.className = 'record';
+    recordDiv.innerHTML = `
+      <input type="checkbox">
+      <span>${recordText}</span>
+    `;
+    recordsContainer.appendChild(recordDiv);
+  }
+
+  // 監聽刪除按鈕被點擊
+  const deleteSelectedBtn = document.createElement('button');
+  deleteSelectedBtn.textContent = '刪除選取的紀錄';
+  deleteSelectedBtn.className = 'deleteBtn';
+  deleteSelectedBtn.addEventListener('click', function() {
+    const password = prompt("請輸入密碼:");
+    if (password === "1207") { // 在这里替换成您的密码
+      const checkboxes = document.querySelectorAll('#recordsContainer input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          checkbox.closest('.record').remove();
+        }
+      });
+      updateLocalStorage();
+    } else {
+      alert("密碼錯誤！");
+    }
+  });
+  recordsContainer.insertBefore(deleteSelectedBtn, recordsContainer.firstChild);
+
+  // 更新本地存儲的函數
+  function updateLocalStorage() {
+    const records = [];
+    const recordDivs = document.querySelectorAll('.record');
+    recordDivs.forEach(recordDiv => {
+      const recordText = recordDiv.querySelector('span').textContent;
+      records.push(recordText);
+    });
+    localStorage.setItem('html1Records', JSON.stringify(records));
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任務系統</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  #tasksContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #counter {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .task {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .task:last-child {
+    border-bottom: none;
+  }
+
+  .task span {
+    margin-right: 20px;
+  }
+
+  .completeBtn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-left: auto;
+    display: block;
+  }
+
+  .completeBtn:hover {
+    background-color: #0056b3;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  #footerButtons {
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div id="counter">目前3C可使用時間: <span id="counterValue">0</span>分鐘</div>
+
+<div id="tasksContainer">
+  <!-- 任务列表 -->
+</div>
+
+<!-- 底部按鈕 -->
+<div id="footerButtons">
+  <button id="viewRecordsBtn" class="btn btn-primary" onclick="viewRecords()">查看紀錄</button>
+  <button class="resetBtn btn btn-warning" onclick="resetCounter()">重置計數器</button>
+  <button class="setCounterBtn btn btn-warning" onclick="setCounter()">設置計數器值</button>
+  <button id="studyBtn" class="btn btn-success" data-toggle="modal" data-target="#studyModal">讀書</button>
+</div>
+
+<!-- 讀書彈出視窗 -->
+<div class="modal fade" id="studyModal" tabindex="-1" role="dialog" aria-labelledby="studyModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="studyModalLabel">讀書</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="studyTimeInput">請輸入讀書時間（分鐘）：</label>
+        <input type="number" id="studyTimeInput" class="form-control" placeholder="輸入數字">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" onclick="addStudyTime()">確定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 密碼輸入彈出視窗 -->
+<div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="passwordModalLabel">請輸入密碼</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="password" id="passwordInput" class="form-control" placeholder="輸入密碼">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-primary" onclick="checkPasswordForTaskCompletion()">確定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+function viewRecords() {
+  window.location.href = "1.html";
+}
+
+function resetCounter() {
+  $('#passwordModal').modal('show');
+}
+
+function setCounter() {
+  $('#passwordModal').modal('show');
+}
+
+function checkPasswordForTaskCompletion() {
+  const password = document.getElementById('passwordInput').value;
+  if (password === "1207") {
+    // 密碼正確，執行相應操作
+    $('#passwordModal').modal('hide'); // 關閉密碼輸入彈出視窗
+    // 在這裡執行完成任務的操作，例如增加計數器值和添加記錄
+    // 請根據需要執行的操作進行更改
+    const now = new Date();
+    const time = now.toLocaleString();
+    const taskName = document.getElementById('taskName').textContent;
+    const increase = parseInt(document.getElementById('taskIncrease').textContent);
+    const record = `${time} - 任務完成：${taskName}，增加3C時間${increase}分鐘。`;
+    const records = JSON.parse(localStorage.getItem('html1Records')) || [];
+    records.push(record);
+    localStorage.setItem('html1Records', JSON.stringify(records));
+  } else {
+    alert("密碼錯誤！");
+  }
+}
+
+function addStudyTime() {
+  const studyTimeInput = document.getElementById('studyTimeInput');
+  const studyTime = parseInt(studyTimeInput.value);
+  if (!isNaN(studyTime) && studyTime > 0) {
+    const increase = Math.ceil(studyTime / 5);
+    let globalCounter = parseInt(localStorage.getItem('counter')) || 0;
+    globalCounter += increase;
+    localStorage.setItem('counter', globalCounter);
+    document.getElementById('counterValue').textContent = globalCounter;
+    $('#studyModal').modal('hide');
+    const now = new Date();
+    const time = now.toLocaleString();
+    const record = `${time} - 讀書${studyTime}分鐘，增加3C時間${increase}分鐘。`;
+    const records = JSON.parse(localStorage.getItem('html1Records')) || [];
+    records.push(record);
+    localStorage.setItem('html1Records', JSON.stringify(records));
+  } else {
+    alert("請輸入有效的讀書時間！");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const tasksContainer = document.getElementById('tasksContainer');
+  const counterValue = document.getElementById('counterValue');
+
+  let globalCounter = parseInt(localStorage.getItem('counter')) || 0;
+  counterValue.textContent = globalCounter;
+
+  // 加载任务列表
+  loadTasks();
+
+  // 加载任务列表的函数
+  function loadTasks() {
+    const tasks = [
+      { name: '吸地板-5分鐘', increase: 5 },
+      { name: '掃廁所-10分鐘', increase: 10 },
+      { name: '擦桌子-2分鐘', increase: 2 },
+      { name: '幫大家洗碗-5分鐘', increase: 5 },
+      { name: '丟垃圾-5分鐘', increase: 5 },
+      { name: '拿uber-5分鐘', increase: 5 },
+      { name: '起床穿好衣服等出門-10分鐘', increase: 10 },
+      { name: '不挑食吃完爸爸點的餐(不是自己提的)-10分鐘', increase: 10 },
+      { name: '洗衣服-5分鐘', increase: 5 },
+      { name: '收衣服(包括分衣服拿到各房間)-5分鐘', increase: 5 },
+      { name: '吃藥(整天的)-5分鐘', increase: 5 },
+      { name: '分襪子(不一定每天都有)-10分鐘', increase: 10 },
+      { name: '考試90分以上-10分鐘', increase: 10 },
+    ];
+
+    tasks.forEach(task => addTask(task.name, task.increase));
+  }
+
+  // 添加任务的函数
+  function addTask(name, increase) {
+    const taskDiv = document.createElement('div');
+    taskDiv.className = 'task';
+    taskDiv.innerHTML = `
+      <span id="taskName">${name}</span>
+      <span id="taskIncrease" style="display: none;">${increase}</span>
+      <button class="completeBtn" data-toggle="modal" data-target="#passwordModal">完成任務</button>
+    `;
+    tasksContainer.appendChild(taskDiv);
+  }
+});
+</script>
+
+</body>
+</html>
